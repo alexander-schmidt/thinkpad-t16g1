@@ -11,11 +11,13 @@ if [[ "${1}" == "post" ]]; then
     LID_STATE=$(cat /proc/acpi/button/lid/LID/state | awk '{print $2}')
 
     if [ "$LID_STATE" = "open" ]; then
+        # Work around occasional slow wifi after waking up from suspend.
         echo "$(date) Woke up while the lid was open. Restarting wifi." >> /tmp/wake.log
         rfkill block wifi && sleep 0.1 && rfkill unblock wifi
     fi
 
     if [ "$LID_STATE" = "closed" ]; then
+        # Work around unintended wakeup when connecting AC power while suspended.
         echo "$(date) Woke up while the lid was closed. Suspending again." >> /tmp/wake.log
         echo freeze > /sys/power/state
     fi
