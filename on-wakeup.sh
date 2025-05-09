@@ -13,7 +13,8 @@ if [[ "${1}" == "post" ]]; then
     if [ "$LID_STATE" = "open" ]; then
         # Work around occasional slow wifi after waking up from suspend.
         echo "$(date) Woke up while the lid was open. Restarting wifi." >> /tmp/wake.log
-        rfkill block wifi && sleep 0.1 && rfkill unblock wifi
+	modprobe -r ath11k_pci ath11k >> /tmp/wake.log
+	modprobe ath11k_pci ath11k >> /tmp/wake.log
     fi
 
     if [ "$LID_STATE" = "closed" ]; then
